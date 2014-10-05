@@ -21,10 +21,11 @@ using namespace std;
 
 #define LINE_LEN 256
 
-double ALPHA        = 0.0001;          // the defualt alpha
+double ALPHA        = 0.0001;       // the defualt alpha
 int M               = 3;            // the number of train instances
 int D               = 4;            // the number of dimension
 int MAX_ITERS       = 30;           // max iterator numbers
+int ALGO            = 1;            // bdg or sgd algorithm
 
 char * train_file   = NULL;         // train file 
 char * predict_file = NULL;         // predict file
