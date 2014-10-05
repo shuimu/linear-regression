@@ -30,11 +30,11 @@
 
 2.  使用命令
     --------------------------------------------------     
-    ./lr -n 10 -a alpha -t train_file -i test_file -o output 
+    ./lr -n 10 -a alpha -k [1,2] -t train_file -i test_file -o output 
     --------------------------------------------------
-
+    
 2.  求参方法
-    lr使用batch gradient descent的策略
+    lr使用batch gradient descent或stochastic gradient descent的策略
 
 
 3. 其他
