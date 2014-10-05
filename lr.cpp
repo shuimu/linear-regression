@@ -18,6 +18,7 @@ int command_line_parse(int argc, char * argv[]) {
         else if (strcmp(arg, "-p") == 0) { predict_file = argv[++i]; }
         else if (strcmp(arg, "-o") == 0) { output_file= argv[++i]; }
         else if (strcmp(arg, "-a") == 0) { ALPHA = atof(argv[++i]); }
+        else if (strcmp(arg, "-k") == 0) { ALGO  = atoi(argv[++i]); } 
         i++;
     }
     if (predict_file == NULL || train_file == NULL || output_file == NULL) {
@@ -29,11 +30,12 @@ int command_line_parse(int argc, char * argv[]) {
 
 void print_help() {
     fprintf(stderr, "\n\n     Linear Regression Command Usage:    \n");
-    fprintf(stderr, "\n     ./lr -n <int> -a <double> -t <string> -i <string> -o <string>\n");
+    fprintf(stderr, "\n     ./lr -n <int> -a <double> -k <int> -t <string> -i <string> -o <string>\n");
     fprintf(stderr, "\n     -n maximum iterators                ");
     fprintf(stderr, "\n     -a alpha parameter                  ");
+    fprintf(stderr, "\n     -k [1,2] bgd or sgd algorithm       ");
     fprintf(stderr, "\n     -t train file                       ");
-    fprintf(stderr, "\n     -p predict file                       ");
+    fprintf(stderr, "\n     -p predict file                     ");
     fprintf(stderr, "\n     -o output file                      \n\n");
 }
 
@@ -56,6 +58,16 @@ void bdg() {
     for(int j = 0; j < D; j++) J_sita_dev[j] /= M;
     J_sita_0_dev /= M;
     
+    for(int j = 0; j < D; j++) J_sita[j] -= ALPHA*J_sita_dev[j];
+    J_sita_0 -= ALPHA*J_sita_0_dev;
+}
+
+void sgd(int k) {
+    for(int j = 0; j < D; j++) {
+        J_sita_dev[j] = func(k)*train_features[k][j];
+    }
+    J_sita_0_dev = func(k);
+
     for(int j = 0; j < D; j++) J_sita[j] -= ALPHA*J_sita_dev[j];
     J_sita_0 -= ALPHA*J_sita_0_dev;
 }
@@ -135,7 +147,13 @@ void init_alldata() {
     J_sita_0 = 0.0;
 }
 
-void train_model() {
+void sgd_train_model() {
+    for(int iter = 0; iter < MAX_ITERS; iter++) {
+        sgd(iter%M);
+    }
+}
+
+void bgd_train_model() {
     for(int iter = 0; iter < MAX_ITERS; iter++) {
         bdg();
     }
@@ -168,7 +186,8 @@ int main(int argc, char * argv[]) {
     if (command_line_parse(argc, argv) != 0) { print_help(); return -1; }
     if (load_data() != 0) { print_help(); return -1; }
     init_alldata();
-    train_model();
+    if(ALGO == 1) bgd_train_model();
+    else sgd_train_model();
     predict();
     return 0;
 }
