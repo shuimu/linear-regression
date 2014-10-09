@@ -41,3 +41,6 @@
     auther: shuimuxixiha
     email:  1141482126@qq.com
     phone:  15300064077
+
+4. 改进：
+    由于未进行normalize，所以可能会造成alpha值过大而不收敛，或者演化过慢。
